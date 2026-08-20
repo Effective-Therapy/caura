@@ -31,6 +31,11 @@ const AGENT_AUTH_ENABLED = Boolean(MEMCLAW_API_KEY);
 
 const keyCache = new Map<string, string>();
 
+// Agent IDs for which provisioning has already returned 404 (route not
+// implemented on this core-api build). Prevents re-attempting a call that
+// is provably going to fail again on every cold resolution.
+const provisioningUnavailable = new Set<string>();
+
 // --- Secrets file I/O ---
 
 interface SecretsFile {
@@ -78,9 +83,20 @@ async function provisionAgentKey(
       signal: AbortSignal.timeout(10_000),
     });
     if (!res.ok) {
-      console.warn(
-        `[memclaw] Agent key provisioning failed for '${agentId}': ${res.status}`,
-      );
+      if (res.status === 404) {
+        // Route not implemented on this core-api build. Expected until the
+        // vendor ships it — log once per agent, not on every cold call.
+        if (!provisioningUnavailable.has(agentId)) {
+          provisioningUnavailable.add(agentId);
+          console.info(
+            `[memclaw] Per-agent key provisioning unavailable (404) for '${agentId}'; using tenant key.`,
+          );
+        }
+      } else {
+        console.warn(
+          `[memclaw] Agent key provisioning failed for '${agentId}': ${res.status}`,
+        );
+      }
       return null;
     }
     const data = (await res.json()) as { raw_key: string; key_prefix: string };
@@ -125,7 +141,8 @@ export async function resolveAgentKey(
     return entry.key;
   }
 
-  // 3. Provision
+  // 3. Provision (skip if this agent already got a confirmed 404)
+  if (provisioningUnavailable.has(agentId)) return null;
   const result = await provisionAgentKey(agentId);
   if (!result) return null;
 
@@ -147,6 +164,7 @@ export async function resolveAgentKey(
  */
 export function evictAgentKey(agentId: string): void {
   keyCache.delete(agentId);
+  provisioningUnavailable.delete(agentId);
   try {
     const secrets = readSecretsFile();
     if (secrets.keys[agentId]) {
