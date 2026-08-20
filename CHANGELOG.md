@@ -6,6 +6,23 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Subsequent releases are produced by [release-please](https://github.com/googleapis/release-please-action)
 from [Conventional Commits](https://www.conventionalcommits.org/).
 
+## [2.30.0](https://github.com/caura-ai/caura/compare/backend-v2.29.0...backend-v2.30.0) (2026-08-20)
+
+
+### Features
+
+* **storage:** one live memory per (tenant, fleet, agent, content_hash) ([#842](https://github.com/caura-ai/caura/issues/842)) ([f718790](https://github.com/caura-ai/caura/commit/f718790bf6f7751854090b6baa86fe2118ba42d7))
+
+
+### Bug Fixes
+
+* **consumer:** route the embed/enrich back-channel read-backs to the writer ([#838](https://github.com/caura-ai/caura/issues/838)) ([4f95b6d](https://github.com/caura-ai/caura/commit/4f95b6dc5d55cca10ba945cc22441abaf0c5ea69)), closes [#812](https://github.com/caura-ai/caura/issues/812)
+* **lifecycle:** a tick broken by a wiring bug must not report success ([#837](https://github.com/caura-ai/caura/issues/837)) ([a1a9bf5](https://github.com/caura-ai/caura/commit/a1a9bf53fd2df27567846738499088206e028bb6)), closes [#818](https://github.com/caura-ai/caura/issues/818)
+* **sdk:** read recall memories from the key the server actually sends ([#835](https://github.com/caura-ai/caura/issues/835)) ([fa91932](https://github.com/caura-ai/caura/commit/fa91932d2f55e0a9e7da4d2089baac0c1d8287a2)), closes [#811](https://github.com/caura-ai/caura/issues/811)
+* **storage:** duplicate content hashes must 409, not 500 forever ([#839](https://github.com/caura-ai/caura/issues/839)) ([2dbab05](https://github.com/caura-ai/caura/commit/2dbab0590f9fc2b77ec028cfa7f4fffacfc3fdd3)), closes [#814](https://github.com/caura-ai/caura/issues/814)
+* **write:** a committed row must not be abandoned by a failed entity link ([#840](https://github.com/caura-ai/caura/issues/840)) ([bc36e28](https://github.com/caura-ai/caura/commit/bc36e287fc13361e09fd55b21b668a9a9348605d)), closes [#815](https://github.com/caura-ai/caura/issues/815)
+* **write:** the server-internal write paths must consult a dedup lookup ([#841](https://github.com/caura-ai/caura/issues/841)) ([1346007](https://github.com/caura-ai/caura/commit/13460074a33d97f01b39d24ca2b5b2475a5a3717))
+
 ## [2.29.0](https://github.com/caura-ai/caura/compare/backend-v2.28.0...backend-v2.29.0) (2026-08-19)
 
 
